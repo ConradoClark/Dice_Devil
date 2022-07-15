@@ -479,6 +479,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -514,9 +515,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
-    width: 0.5
-    height: 1
+    y: 0.2
+    width: 0.75
+    height: 0.8
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -552,6 +553,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85e5598e8c68c0441b50aaf4f4826b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MinZoomIn: 2
+  MaxZoomOut: 8
+  CameraSpeed: 10
+  GameCamera: {fileID: 519420031}
+  PostUpdateMachinery: {fileID: 11400000, guid: 1796a1ed5f916fa419ae2c8b14c7e257, type: 2}
+  HorizontalMove: {fileID: 11400000, guid: d7bb643b6ee38374e9daa57c355cf212, type: 2}
+  VerticalMove: {fileID: 11400000, guid: 15137077f8ecf474e982c72c53327ad3, type: 2}
+  RightMouseClick: {fileID: 11400000, guid: ecf7a8d722fc57643a4b856e758f4ca3, type: 2}
+  MouseScroll: {fileID: 11400000, guid: d988a69091e22584b81971285bf11565, type: 2}
 --- !u!1 &694428796
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,6 +801,7 @@ GameObject:
   - component: {fileID: 1485269794}
   - component: {fileID: 1485269793}
   - component: {fileID: 1485269798}
+  - component: {fileID: 1485269799}
   m_Layer: 0
   m_Name: Toolbox
   m_TagString: Untagged
@@ -842,6 +865,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 273b04a305c001e4782d158cd8fc4823, type: 2}
   - {fileID: 11400000, guid: 5f07f4b6eb665034dbe6c60349732b45, type: 2}
   - {fileID: 11400000, guid: ceae4940cb715fe489c15b29c7f7e955, type: 2}
+  - {fileID: 11400000, guid: 1796a1ed5f916fa419ae2c8b14c7e257, type: 2}
 --- !u!4 &1485269797
 Transform:
   m_ObjectHideFlags: 0
@@ -870,6 +894,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SecondsToADay: 5
+--- !u!114 &1485269799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1485269792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 6d8080e56229cd448a9447a7838f6983, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: Keyboard & Mouse
+  m_DefaultActionMap: Main
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 519420031}
 --- !u!1 &1710068629
 GameObject:
   m_ObjectHideFlags: 0
