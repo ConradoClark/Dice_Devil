@@ -50,7 +50,7 @@ public class CameraController : BaseUIObject
         var targetZoom = GameCamera.orthographicSize;
         while (isActiveAndEnabled)
         {
-            var zoom = _mouseScroll.ReadValue<float>();
+            var zoom = -_mouseScroll.ReadValue<float>();
 
             targetZoom += zoom * 0.01f;
             targetZoom = Mathf.Clamp(targetZoom, MinZoomIn, MaxZoomOut);
