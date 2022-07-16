@@ -64,15 +64,17 @@ public class TokenCardSleeve : BaseGameObject, IGenerator<int,float>
 
     private IEnumerable<IEnumerable<Action>> RecallCard(int index)
     {
-        var tokenCard = TokenCardSlots[index];
+        var tokenCardSlot = TokenCardSlots[index];
 
-        yield return tokenCard.transform.GetAccessor()
+        yield return tokenCardSlot.transform.GetAccessor()
             .Position.Y
             .SetTarget(StartingY)
             .Over(DrawTimeInSeconds / 6)
             .UsingTimer(GameTimer)
             .Easing(EasingYields.EasingFunction.QuadraticEaseInOut)
             .Build();
+
+        tokenCardSlot.TokenCard = null;
     }
 
     private IEnumerable<IEnumerable<Action>> DrawCard(int index)

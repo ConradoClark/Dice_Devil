@@ -2,12 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Licht.Impl.Orchestration;
+using Licht.Interfaces.Update;
 using Licht.Unity.Mixins;
 using Licht.Unity.Objects;
 using UnityEngine;
 
-public class TokenCardSlot : BaseUIObject
+public class TokenCardSlot : BaseUIObject, IResettable
 {
+    public Transform EmptyCard;
     public bool IsSelected { get; private set; }
     public TokenCard TokenCard { get; set; }
 
@@ -32,8 +34,24 @@ public class TokenCardSlot : BaseUIObject
         DefaultMachinery.AddBasicMachine(HandleSelect());
     }
 
+    public bool PerformReset()
+    {
+        IsSelected = false;
+        EmptyCard.gameObject.SetActive(false);
+        return true;
+    }
+
     private IEnumerable<IEnumerable<Action>> HandleSelect()
     {
+        if (!TokenCard.IsActive)
+        {
+            //play boo sound 
+            yield return TimeYields.WaitSeconds(UITimer, 0.5f);
+            IsSelected = false;
+            yield break;
+        }
+
+
         while (!_clickable.WasClickedThisFrame())
         {
             yield return TimeYields.WaitOneFrameX;
@@ -46,5 +64,6 @@ public class TokenCardSlot : BaseUIObject
         _cursor.SetSprite(null);
 
         IsSelected = false;
+        EmptyCard.gameObject.SetActive(true);
     }
 }

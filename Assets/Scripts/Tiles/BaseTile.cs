@@ -1,14 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Licht.Impl.Orchestration;
 using Licht.Unity.Objects;
 using Licht.Unity.Pooling;
 using UnityEngine;
 
 public class BaseTile : EffectPoolable
 {
+    public TileType TileType;
     public bool IsStarting;
     public bool IsPlaced { get; private set; }
     public SpriteRenderer Sprite;
+    public Vector2Int CurrentPosition { get; set; }
 
     protected Grid Grid;
     protected GameTileMap GameTileMap;
@@ -49,10 +53,17 @@ public class BaseTile : EffectPoolable
     {
         if (IsPlaced) return;
         var pos = Grid.WorldToCell(transform.position);
-        GameTileMap.PlaceTile(this, (Vector2Int) pos);
+        CurrentPosition = (Vector2Int) pos;
+        DefaultMachinery.AddBasicMachine(GameTileMap.PlaceTile(this));
         Sprite.material.SetColor(MatColor, Color.white);
         Sprite.material.SetColor(MatColorize, NoColorize);
         IsPlaced = true;
+    }
+
+    public void Release()
+    {
+        GameTileMap.RemoveTile(this, false);
+        IsEffectOver = true;
     }
 
     public override bool IsEffectOver { get; protected set; }

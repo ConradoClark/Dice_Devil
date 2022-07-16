@@ -1,22 +1,109 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Licht.Impl.Orchestration;
+using Licht.Unity.Objects;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
-public class GameTileMap : MonoBehaviour
+public class GameTileMap : BaseGameObject
 {
+    public BaseTransformation[] PossibleTransformations;
     public Dictionary<Vector2Int, BaseTile> Tiles { get; private set; }
-    private void Awake()
+
+    private Dictionary<ScriptPrefab, TilePool> _tilePools;
+
+    protected override void OnAwake()
     {
+        base.OnAwake();
         Tiles = new Dictionary<Vector2Int, BaseTile>();
+        _tilePools = new Dictionary<ScriptPrefab, TilePool>();
+
+        // Initialize pools for transformations
+        var tileOutputs = PossibleTransformations.Select(t => t.TileType).Distinct().ToArray();
+        var manager = SceneObject<TilePoolManager>.Instance();
+
+        foreach (var tileOutput in tileOutputs)
+        {
+            _tilePools[tileOutput] = manager.GetEffect(tileOutput);
+        }
     }
 
-    public void PlaceTile(BaseTile tile, Vector2Int position)
+    public void RemoveTile(BaseTile tile, bool checkTransformations)
     {
-        Tiles[position] = tile;
+        Tiles.Remove(tile.CurrentPosition);
+
+        if (checkTransformations)
+        {
+            DefaultMachinery.AddBasicMachine(Validate9X9Tiles(tile.CurrentPosition));
+        }
+    }
+
+    private void TransformTile(BaseTile tile, ScriptPrefab targetTile)
+    {
+        tile.Release();
+
+        if (_tilePools[targetTile].TryGetFromPool(out var newTile))
+        {
+            newTile.transform.position = tile.transform.position;
+            newTile.Place();
+        }
+    }
+
+    public IEnumerable<IEnumerable<Action>> PlaceTile(BaseTile tile)
+    {
+        Tiles[tile.CurrentPosition] = tile;
+        yield return Validate9X9Tiles(tile.CurrentPosition).AsCoroutine();
+    }
+
+    public IEnumerable<IEnumerable<Action>> Validate9X9Tiles(Vector2Int center)
+    {
+        if (TryGetTile(center, out var tile))
+        {
+            foreach (var transformation in PossibleTransformations)
+            {
+                var needsToTransform = transformation.ValidateSurroundings(this, tile, tile.CurrentPosition);
+                if (!needsToTransform) continue;
+
+                TransformTile(tile, transformation.TileType);
+
+                break;
+            }
+
+            yield return TimeYields.WaitSeconds(GameTimer, 0.2f);
+        }
+
+        for (var i = 0; i < 3; i++)
+        {
+            for (var j = 0; j < 3; j++)
+            {
+                var pos = tile.CurrentPosition - new Vector2Int(i - 1, j - 1);
+                if (!TryGetTile(pos, out var neighbor)) continue; // no tiles here, keep going
+                
+                foreach (var transformation in PossibleTransformations)
+                {
+                        var needsToTransform = transformation.ValidateSurroundings(this, neighbor, pos);
+                    if (!needsToTransform) continue;
+
+                    TransformTile(neighbor, transformation.TileType);
+
+                    yield return TimeYields.WaitSeconds(GameTimer, 0.2f);
+
+                    break;
+                }
+            }
+        }
+    }
+
+    public bool TryGetTile(Vector2Int position, out BaseTile tile)
+    {
+        if (Tiles.ContainsKey(position))
+        {
+            tile = Tiles[position];
+            return true;
+        }
+
+        tile = null;
+        return false;
     }
 
     public bool IsOccupied(Vector2Int position)
