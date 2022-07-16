@@ -6,34 +6,32 @@ using Licht.Unity.Mixins;
 using Licht.Unity.Objects;
 using UnityEngine;
 
-public class RollButton : BaseUIObject
+public class RollButton : BaseUIButton
 {
-    public ScriptInput MousePosInput;
-    public ScriptInput MouseClickInput;
-    private ClickableObjectMixin _clickable;
+    public ScriptPrefab CardSelectorPrefab;
+    private TokenCardSelectorPool _selectorPool;
     protected override void OnAwake()
     {
         base.OnAwake();
-        var uiCamera = SceneObject<UICamera>.Instance().Camera;
-        _clickable = new ClickableObjectMixinBuilder(this, MousePosInput, MouseClickInput)
-            .WithCamera(uiCamera)
-            .Build();
+        _selectorPool = SceneObject<TokenCardSelectorPoolManager>.Instance().GetEffect(CardSelectorPrefab);
     }
 
-    private void OnEnable()
+    protected override IEnumerable<IEnumerable<Action>> OnClick()
     {
-        DefaultMachinery.AddBasicMachine(HandleClick());
-    }
+        Debug.Log("clicked on roll button!");
 
-    private IEnumerable<IEnumerable<Action>> HandleClick()
-    {
-        while (isActiveAndEnabled)
+        if (_selectorPool.TryGetFromPool(out var selector))
         {
-            if (_clickable.WasClickedThisFrame())
+            yield return selector.Roll().AsCoroutine();
+
+            while (selector.SelectedSlot.IsSelected)
             {
-                Debug.Log("clicked on roll button!");
+                yield return TimeYields.WaitOneFrameX;
             }
-            yield return TimeYields.WaitOneFrameX;
+
+            selector.MarkAsUsed();
         }
+
+        yield return TimeYields.WaitOneFrameX;
     }
 }

@@ -89,6 +89,7 @@ public class TokenCardSleeve : BaseGameObject, IGenerator<int,float>
             tokenCard.transform.localPosition = TokenCardOffset;
         }
 
+        tokenCardSlot.TokenCard = tokenCard;
         yield return tokenCardSlot.transform.GetAccessor()
             .Position.Y
             .SetTarget(TargetY)

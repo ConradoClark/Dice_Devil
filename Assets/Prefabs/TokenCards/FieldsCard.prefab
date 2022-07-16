@@ -94,9 +94,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6455581492739450384}
   - component: {fileID: 6455581492739450385}
-  - component: {fileID: 8106525724590989364}
+  - component: {fileID: -8100928004163086037}
   m_Layer: 5
-  m_Name: FieldCard
+  m_Name: FieldsCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -171,7 +171,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8106525724590989364
+--- !u!114 &-8100928004163086037
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -180,9 +180,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6455581492739450398}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a3b2d43312eddc4f866aa80b8e55494, type: 3}
+  m_Script: {fileID: 11500000, guid: 44abb71032e1c21469425a41b94953ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ActiveOnInitialization: 0
+  SpriteRenderer: {fileID: 6455581492739450385}
+  TileType: {fileID: 11400000, guid: 78aa83dcfed575b4483edec5e9988f5c, type: 2}
 --- !u!1 &6455581493963404477
 GameObject:
   m_ObjectHideFlags: 0

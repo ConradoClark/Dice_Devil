@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Licht.Unity.Objects;
@@ -6,16 +7,17 @@ using UnityEngine;
 
 public class TokenCard : EffectPoolable
 {
+    public SpriteRenderer SpriteRenderer;
+
     public override void OnActivation()
     {
         
     }
 
-    public virtual void Use()
+    public virtual IEnumerable<IEnumerable<Action>> Use()
     {
-        // maybe do a effect before setting this to true
         IsEffectOver = true;
-        // go to respective inventory, blablabla
+        yield break;
     }
 
     public override bool IsEffectOver { get; protected set; }
