@@ -36,11 +36,20 @@ public class TokenCardSlot : BaseUIObject, IResettable
 
     public bool PerformReset()
     {
+        Discard();
         IsSelected = false;
         EmptyCard.gameObject.SetActive(false);
         return true;
     }
 
+    public void Discard()
+    {
+        if (TokenCard.IsActive)
+        {
+            TokenCard.Discard();
+        }
+
+    }
     private IEnumerable<IEnumerable<Action>> HandleSelect()
     {
         if (!TokenCard.IsActive)
@@ -52,9 +61,14 @@ public class TokenCardSlot : BaseUIObject, IResettable
         }
 
 
-        while (!_clickable.WasClickedThisFrame())
+        while (!_clickable.WasClickedThisFrame() || !IsSelected)
         {
             yield return TimeYields.WaitOneFrameX;
+        }
+
+        if (!IsSelected) // recalled
+        {
+            yield break;
         }
 
         _cursor.SetSprite(TokenCard.SpriteRenderer.sprite);

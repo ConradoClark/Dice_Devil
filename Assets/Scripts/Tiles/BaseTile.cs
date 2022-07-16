@@ -40,6 +40,7 @@ public class BaseTile : EffectPoolable
 
     public override void OnActivation()
     {
+        IsPlaced = false;
         Sprite.material.SetColor(MatColor, new Color(1, 1, 1, 0.5f));
     }
 
@@ -63,6 +64,7 @@ public class BaseTile : EffectPoolable
     public void Release()
     {
         GameTileMap.RemoveTile(this, false);
+        IsPlaced = false;
         IsEffectOver = true;
     }
 

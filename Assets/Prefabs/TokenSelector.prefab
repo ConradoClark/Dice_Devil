@@ -183,7 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ActiveOnInitialization: 0
-  RollRepeats: 4
+  RollRepeats: 2
   SpriteRenderer: {fileID: 6392046129992195725}
   FillSpriteRenderer: {fileID: 427190225550532649}
   TimeBetweenColorBlinksInMs: 5

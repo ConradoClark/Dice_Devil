@@ -20,5 +20,10 @@ public class TokenCard : EffectPoolable
         yield break;
     }
 
+    public void Discard()
+    {
+        IsEffectOver = true;
+    }
+
     public override bool IsEffectOver { get; protected set; }
 }

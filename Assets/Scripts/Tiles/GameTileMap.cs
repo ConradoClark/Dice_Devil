@@ -32,7 +32,7 @@ public class GameTileMap : BaseGameObject
 
     public void RemoveTile(BaseTile tile, bool checkTransformations)
     {
-        Tiles.Remove(tile.CurrentPosition);
+        if (tile.TileType == Tiles[tile.CurrentPosition].TileType) Tiles.Remove(tile.CurrentPosition);
         OnTilesChanged?.Invoke(tile);
 
         if (checkTransformations)

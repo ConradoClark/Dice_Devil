@@ -31,6 +31,15 @@ public class TokenCardSelector : EffectPoolable
         }
     }
 
+    public IEnumerable<IEnumerable<Action>> MarkAsUsedAndWait()
+    {
+        if (!_rolling && !_used)
+        {
+            _used = true;
+            yield return Return().AsCoroutine();
+        }
+    }
+
     protected override void OnAwake()
     {
         base.OnAwake();

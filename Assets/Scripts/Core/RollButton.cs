@@ -18,14 +18,22 @@ public class RollButton : BaseUIButton
 
     protected override IEnumerable<IEnumerable<Action>> OnClick()
     {
-        Debug.Log("clicked on roll button!");
-
+        roll:
         if (_selectorPool.TryGetFromPool(out var selector))
         {
             yield return selector.Roll().AsCoroutine();
 
+            yield return Lift().AsCoroutine(); // allow clicking again to reroll
+
             while (selector.SelectedSlot.IsSelected)
             {
+                if (Clickable.WasClickedThisFrame())
+                {
+                    yield return selector.MarkAsUsedAndWait().AsCoroutine();
+                    yield return TimeYields.WaitOneFrameX;
+                    goto roll;
+                }
+
                 yield return TimeYields.WaitOneFrameX;
             }
 

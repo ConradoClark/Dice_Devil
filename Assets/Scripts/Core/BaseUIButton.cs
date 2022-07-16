@@ -14,8 +14,6 @@ public abstract class BaseUIButton : BaseUIObject
     public Sprite ClickedSprite;
     public SpriteRenderer SpriteRenderer;
     public SpriteRenderer DarkBackground;
-    public ScriptInput MousePosInput;
-    public ScriptInput MouseClickInput;
 
     public bool IsActive { get; protected set; }
 
@@ -27,8 +25,9 @@ public abstract class BaseUIButton : BaseUIObject
     {
         base.OnAwake();
         var uiCamera = SceneObject<UICamera>.Instance().Camera;
+        var standards = SceneObject<InputStandards>.Instance();
         OriginalPosition = transform.position;
-        Clickable = new ClickableObjectMixinBuilder(this, MousePosInput, MouseClickInput)
+        Clickable = new ClickableObjectMixinBuilder(this, standards.MousePosInput, standards.LeftClickInput)
             .WithCamera(uiCamera)
             .Build();
     }
@@ -58,6 +57,15 @@ public abstract class BaseUIButton : BaseUIObject
             }
             yield return TimeYields.WaitOneFrameX;
         }
+    }
+
+    protected IEnumerable<IEnumerable<Action>> Lift()
+    {
+        IsActive = false;
+        SpriteRenderer.sprite = ButtonSprite;
+        DarkBackground.enabled = false;
+        transform.position = OriginalPosition;
+        yield break;
     }
 
     protected abstract IEnumerable<IEnumerable<Action>> OnClick();

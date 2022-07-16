@@ -74,6 +74,7 @@ public class TokenCardSleeve : BaseGameObject, IGenerator<int,float>
             .Easing(EasingYields.EasingFunction.QuadraticEaseInOut)
             .Build();
 
+        tokenCardSlot.PerformReset();
         tokenCardSlot.TokenCard = null;
     }
 
