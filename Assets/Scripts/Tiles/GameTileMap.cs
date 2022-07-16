@@ -12,6 +12,8 @@ public class GameTileMap : BaseGameObject
 
     private Dictionary<ScriptPrefab, TilePool> _tilePools;
 
+    public event Action<BaseTile> OnTilesChanged;
+
     protected override void OnAwake()
     {
         base.OnAwake();
@@ -31,6 +33,7 @@ public class GameTileMap : BaseGameObject
     public void RemoveTile(BaseTile tile, bool checkTransformations)
     {
         Tiles.Remove(tile.CurrentPosition);
+        OnTilesChanged?.Invoke(tile);
 
         if (checkTransformations)
         {
@@ -46,12 +49,14 @@ public class GameTileMap : BaseGameObject
         {
             newTile.transform.position = tile.transform.position;
             newTile.Place();
+            OnTilesChanged?.Invoke(newTile);
         }
     }
 
     public IEnumerable<IEnumerable<Action>> PlaceTile(BaseTile tile)
     {
         Tiles[tile.CurrentPosition] = tile;
+        OnTilesChanged?.Invoke(tile);
         yield return Validate9X9Tiles(tile.CurrentPosition).AsCoroutine();
     }
 

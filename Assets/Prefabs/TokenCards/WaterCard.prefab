@@ -117,7 +117,7 @@ Transform:
   - {fileID: 6455581493963404476}
   - {fileID: 3836697124671530854}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6455581492739450385
 SpriteRenderer:
@@ -286,7 +286,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Field
+  m_text: Water
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: cc74b189bb89ca44581879b2451d41a3, type: 2}
   m_sharedMaterial: {fileID: -970451366659928572, guid: cc74b189bb89ca44581879b2451d41a3, type: 2}
@@ -295,8 +295,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4284391791
-  m_fontColor: {r: 0.43529415, g: 0.6313726, b: 0.36862746, a: 1}
+    rgba: 4288643419
+  m_fontColor: {r: 0.35686275, g: 0.5058824, b: 0.62352943, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -313,8 +313,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 7
-  m_fontSizeBase: 7
+  m_fontSize: 6.5
+  m_fontSizeBase: 6.5
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
