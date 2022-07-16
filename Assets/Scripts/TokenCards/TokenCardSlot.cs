@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Licht.Unity.Objects;
 using UnityEngine;
 
-public class TokenCard : BaseUIObject
+public class TokenCardSlot : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
