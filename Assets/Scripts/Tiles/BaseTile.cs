@@ -16,7 +16,8 @@ public class BaseTile : EffectPoolable
     protected static string MatColor = "_Color";
     protected static string MatColorize = "_Colorize";
     protected static Color AllowPlacementColor = new (0, 1, 0, 0.5f);
-    protected Color DisallowPlacementColor = new (1, 0, 0, 0.5f);
+    protected static Color DisallowPlacementColor = new (1, 0, 0, 0.5f);
+    protected static Color NoColorize = new(0, 0, 0, 0);
 
     protected override void OnAwake()
     {
@@ -38,16 +39,10 @@ public class BaseTile : EffectPoolable
         Sprite.material.SetColor(MatColor, new Color(1, 1, 1, 0.5f));
     }
 
-    public void SetAllow()
+    public void SetAllow(bool allow)
     {
         if (IsPlaced) return;
-        Sprite.material.SetColor(MatColorize, AllowPlacementColor);
-    }
-
-    public void SetDisallow()
-    {
-        if (IsPlaced) return;
-        Sprite.material.SetColor(MatColorize, DisallowPlacementColor);
+        Sprite.material.SetColor(MatColorize, allow ? AllowPlacementColor : DisallowPlacementColor);
     }
 
     public void Place()
@@ -56,6 +51,7 @@ public class BaseTile : EffectPoolable
         var pos = Grid.WorldToCell(transform.position);
         GameTileMap.PlaceTile(this, (Vector2Int) pos);
         Sprite.material.SetColor(MatColor, Color.white);
+        Sprite.material.SetColor(MatColorize, NoColorize);
         IsPlaced = true;
     }
 

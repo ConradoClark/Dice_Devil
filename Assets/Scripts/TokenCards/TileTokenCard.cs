@@ -16,12 +16,14 @@ public class TileTokenCard : TokenCard
     private ClickDetectionMixin _clicks;
     private Grid _grid;
     private bool _placed;
+    private GameTileMap _gameTileMap;
 
     protected override void OnAwake()
     {
         base.OnAwake();
         _tilePool = SceneObject<TilePoolManager>.Instance().GetEffect(TileType);
         _grid = SceneObject<Grid>.Instance();
+        _gameTileMap = SceneObject<GameTileMap>.Instance();
         var standards = SceneObject<InputStandards>.Instance();
         _clicks = new ClickDetectionMixinBuilder(this, standards.MousePosInput, standards.LeftClickInput).Build();
     }
@@ -44,15 +46,24 @@ public class TileTokenCard : TokenCard
                 var pos = _grid.CellToWorld(cellPos);
 
                 tile.transform.position = new Vector3(pos.x, pos.y, 0);
-                tile.SetAllow();
+                var cellPos2D = (Vector2Int)cellPos;
+                var allow = !(_gameTileMap.IsOccupied(cellPos2D) || !_gameTileMap.HasAdjacent(cellPos2D));
+                tile.SetAllow(allow);
 
                 if (_clicks.WasClickedThisFrame(out _))
                 {
-                    var screenPoint = Camera.main.WorldToViewportPoint(pos);
-                    if (screenPoint.x is > 0 and < 1 && screenPoint.y is > 0 and < 1) // is in viewport
+                    if (allow)
                     {
-                        tile.Place();
-                        _placed = true;
+                        var screenPoint = Camera.main.WorldToViewportPoint(pos);
+                        if (screenPoint.x is > 0 and < 1 && screenPoint.y is > 0 and < 1) // is in viewport
+                        {
+                            tile.Place();
+                            _placed = true;
+                        }
+                    }
+                    else
+                    {
+                        // play no-no sound
                     }
                 }
 
