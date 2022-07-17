@@ -14,7 +14,10 @@ public class RefreshButton : BaseUIButton
         get
         {
             var cost = BaseManaCost - _tokenCardSleeve.TokenCardSlots?.Select(t => t.TokenCard == null || t.TokenCard.IsActive ? 0 : 100).Sum() ?? 0;
-            return Math.Clamp(cost, 0, BaseManaCost);
+            var extraCost = (_tokenCardSleeve.TokenCardSlots?.Select(t => t.IsLocked ? 50 : 0).Sum() ?? 0) * 2;
+            cost += extraCost;
+
+            return Math.Clamp(cost, 0, cost);
         }
     }
 

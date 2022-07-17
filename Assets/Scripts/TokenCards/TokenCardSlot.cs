@@ -12,9 +12,11 @@ public class TokenCardSlot : BaseUIObject, IResettable
     public Transform EmptyCard;
     public bool IsSelected { get; private set; }
     public bool IsBlocked { get; private set; }
+    public bool IsLocked { get; private set; }
     public TokenCard TokenCard { get; set; }
 
     public SpriteRenderer BlockedSlotSprite;
+    public SpriteRenderer LockedSlotSprite;
 
     private ClickableObjectMixin _clickable;
     private Cursor _cursor;
@@ -35,6 +37,12 @@ public class TokenCardSlot : BaseUIObject, IResettable
     {
         IsBlocked = !IsBlocked;
         BlockedSlotSprite.enabled = IsBlocked;
+    }
+
+    public void ToggleLock()
+    {
+        IsLocked = !IsLocked;
+        LockedSlotSprite.enabled = IsLocked;
     }
 
     public void MarkAsSelected()

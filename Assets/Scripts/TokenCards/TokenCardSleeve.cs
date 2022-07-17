@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Licht.Impl.Generation;
 using Licht.Impl.Orchestration;
@@ -55,6 +56,8 @@ public class TokenCardSleeve : BaseGameObject, IGenerator<int,float>
     {
         for (var i = 0; i < 6; i++)
         {
+            if (TokenCardSlots[i].IsLocked) continue;
+
             DefaultMachinery.AddBasicMachine(RecallCard(i));
             yield return TimeYields.WaitSeconds(GameTimer, 0.2f);
         }
@@ -109,7 +112,7 @@ public class TokenCardSleeve : BaseGameObject, IGenerator<int,float>
             yield return Recall().AsCoroutine();
         }
 
-        foreach (var tokenCard in TokenCardSlots)
+        foreach (var tokenCard in TokenCardSlots.Where(t=>!t.IsLocked))
         {
             tokenCard.transform.position =
                 new Vector3(tokenCard.transform.position.x, StartingY, tokenCard.transform.position.z);
@@ -117,6 +120,7 @@ public class TokenCardSleeve : BaseGameObject, IGenerator<int,float>
 
         for (var i = 0; i < 6; i++)
         {
+            if (TokenCardSlots[i].IsLocked) continue;
             DefaultMachinery.AddBasicMachine(DrawCard(i));
             yield return TimeYields.WaitSeconds(GameTimer, DelayBetweenDrawsInSeconds);
         }
