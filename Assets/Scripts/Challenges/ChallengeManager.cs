@@ -16,9 +16,12 @@ public class ChallengeManager : BaseGameObject
     public event Action<BaseChallenge> OnChallengeStart;
     public event Action<BaseChallenge> OnChallengeFail;
     public event Action<BaseChallenge> OnChallengeSuccess;
+    public event Action<List<BaseChallenge>> OnChallengeListChanged;
 
 
+    private BaseChallenge _lastChallenge;
     private GameTileMap _gameTileMap;
+    private bool _skipWait;
 
     protected override void OnAwake()
     {
@@ -44,7 +47,7 @@ public class ChallengeManager : BaseGameObject
     {
         foreach (var challenge in ActiveChallenges)
         {
-            challenge.CheckRequirements();
+            challenge.CheckRequirements(false);
         }
     }
 
@@ -56,6 +59,7 @@ public class ChallengeManager : BaseGameObject
             markedForRemoval.Clear();
             foreach (var challenge in ActiveChallenges)
             {
+                var isFirst = challenge.CompletedOnFirstCheck;
                 var requirementsCompleted = challenge.CheckRequirements();
                 if (challenge.IsExpired && !requirementsCompleted)
                 {
@@ -66,12 +70,23 @@ public class ChallengeManager : BaseGameObject
                 {
                     OnChallengeSuccess?.Invoke(challenge);
                     markedForRemoval.Add(challenge);
+
+                    if (isFirst)
+                    {
+                        _skipWait = true;
+                        // break sequence and give next challenge immediately
+                    }
                 }
             }
 
             foreach (var challenge in markedForRemoval)
             {
                 ActiveChallenges.Remove(challenge);
+            }
+
+            if (markedForRemoval.Count > 0)
+            {
+                OnChallengeListChanged?.Invoke(ActiveChallenges);
             }
 
             yield return TimeYields.WaitOneFrameX;
@@ -82,20 +97,29 @@ public class ChallengeManager : BaseGameObject
     {
         while (isActiveAndEnabled)
         {
+            _skipWait = false;
             yield return TimeYields.WaitOneFrameX;
-
 
             if (ActiveChallenges.Count < MaxSimultaneousChallenges)
             {
-                var possibleChallenges = PossibleChallenges.Except(ActiveChallenges).ToArray();
+                var possibleChallenges = PossibleChallenges.Except(ActiveChallenges.Concat(new[] { _lastChallenge }))
+                    .Where(c => c != null)
+                    .ToArray();
+
                 var chosenChallenge = possibleChallenges[UnityEngine.Random.Range(0, possibleChallenges.Length)];
                 chosenChallenge.StartTimer();
                 ActiveChallenges.Add(chosenChallenge);
+                _lastChallenge = chosenChallenge;
 
                 OnChallengeStart?.Invoke(chosenChallenge);
             }
 
-            yield return TimeYields.WaitSeconds(GameTimer, 30);
+            yield return TimeYields.WaitSeconds(GameTimer, 30, breakCondition: () => _skipWait);
+
+            if (_skipWait)
+            {
+                yield return TimeYields.WaitSeconds(GameTimer, 1);
+            }
         }
     }
 }

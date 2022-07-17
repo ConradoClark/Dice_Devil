@@ -29,6 +29,16 @@ public class ChallengeUI : BaseUIObject
         _challengeManager.OnChallengeStart += OnChallengeStart;
         _challengeManager.OnChallengeSuccess += OnChallengeSuccess;
         _challengeManager.OnChallengeFail += OnChallengeFailure;
+        _challengeManager.OnChallengeListChanged += OnChallengeListChanged;
+    }
+
+    private void OnChallengeListChanged(List<BaseChallenge> obj)
+    {
+        for (var i = 0; i < obj.Count; i++)
+        {
+            var challenge = obj[i];
+            DefaultMachinery.AddBasicMachine(challenge.Move(transform.position.y + YOffset - DistanceBetweenChallenges * (i+1)));
+        }
     }
 
     private void OnDisable()
@@ -36,6 +46,7 @@ public class ChallengeUI : BaseUIObject
         _challengeManager.OnChallengeStart -= OnChallengeStart;
         _challengeManager.OnChallengeSuccess -= OnChallengeSuccess;
         _challengeManager.OnChallengeFail -= OnChallengeFailure;
+        _challengeManager.OnChallengeListChanged -= OnChallengeListChanged;
     }
 
     private void OnChallengeStart(BaseChallenge obj)

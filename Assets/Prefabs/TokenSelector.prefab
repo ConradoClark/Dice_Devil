@@ -187,5 +187,5 @@ MonoBehaviour:
   SpriteRenderer: {fileID: 6392046129992195725}
   FillSpriteRenderer: {fileID: 427190225550532649}
   TimeBetweenColorBlinksInMs: 5
-  TimeBetweenRollsInSeconds: 0.075
+  TimeBetweenRollsInSeconds: 0.04
   SelectedSlot: {fileID: 0}

@@ -10,6 +10,11 @@ namespace Assets.Scripts.Challenges
 {
     public class TileTypeChallenge : BaseChallenge
     {
+        public int BaseScore;
+        public int Growth;
+        public int Level;
+
+        public TileTypeRequirement Requirements;
         public ScriptPrefab UIPrefab;
         public ScriptPrefab TimerPrefab;
         private TileTypeChallengeUIPool _uiPool;
@@ -19,6 +24,7 @@ namespace Assets.Scripts.Challenges
         private ChallengeTimer _currentTimer;
         private ChallengeTimerPool _timer;
         private ITimer _gameTimer;
+        private bool _firstCheck;
 
         protected override void OnAwake()
         {
@@ -30,17 +36,26 @@ namespace Assets.Scripts.Challenges
             _challengeManager = SceneObject<ChallengeManager>.Instance();
         }
 
-        public TileTypeRequirement Requirements;
-        public override bool CheckRequirements()
+        
+        public override bool CheckRequirements(bool markAsChecked = true)
         {
             var count = GameTileMap.Tiles.Count(t => t.Value.TileType == Requirements.TileType);
             UpdateProgress(count);
-            return count >= Requirements.Amount;
+            var completed = count >= Requirements.Amount;
+
+            if (markAsChecked && _firstCheck)
+            {
+                CompletedOnFirstCheck = completed;
+                _firstCheck = false;
+            }
+
+            return completed;
         }
 
         public override void StartTimer()
         {
             StartTime = (float)_gameTimer.TotalElapsedTimeInMilliseconds;
+            _firstCheck = true;
         }
 
         private void UpdateProgress(int count)
@@ -87,14 +102,21 @@ namespace Assets.Scripts.Challenges
                 .Build();
 
             _currentUI.Hide();
+            _currentTimer.transform.SetParent(_timer.transform);
             _currentTimer.Hide();
             _currentUI = null;
+            _currentTimer = null;
         }
 
         public override IEnumerable<IEnumerable<Action>> Success()
         {
-            yield return _currentUI.SetToSuccess().AsCoroutine();
-            yield return Hide().AsCoroutine();
+            if (_currentUI != null)
+            {
+                yield return _currentUI.SetToSuccess().AsCoroutine();
+                yield return Hide().AsCoroutine();
+            }
+
+            Progress();
         }
 
         public override IEnumerable<IEnumerable<Action>> Failure()
@@ -103,6 +125,29 @@ namespace Assets.Scripts.Challenges
             yield return Hide().AsCoroutine();
         }
 
+        public override IEnumerable<IEnumerable<Action>> Move(float posY)
+        {
+            if (_currentUI == null) yield break;
+
+            yield return TimeYields.WaitSeconds(UITimer, 0.55f);
+
+            yield return _currentUI.transform.GetAccessor()
+                .Position
+                .Y
+                .SetTarget(posY)
+                .Over(0.25f)
+                .Easing(EasingYields.EasingFunction.QuadraticEaseOut)
+                .UsingTimer(UITimer)
+                .Build();
+        }
+
+        public override void Progress()
+        {
+            Level++;
+            Requirements.Amount += Growth;
+        }
+
         public override bool IsExpired => _currentTimer?.IsExpired ?? false;
+        public override int Score => BaseScore * Level;
     }
 }

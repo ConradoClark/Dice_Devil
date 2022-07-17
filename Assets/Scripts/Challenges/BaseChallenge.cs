@@ -15,7 +15,7 @@ namespace Assets.Scripts.Challenges
             GameTileMap = SceneObject<GameTileMap>.Instance();
         }
 
-        public abstract bool CheckRequirements();
+        public abstract bool CheckRequirements(bool markAsChecked=true);
 
         public abstract void StartTimer();
 
@@ -23,8 +23,16 @@ namespace Assets.Scripts.Challenges
 
         public abstract IEnumerable<IEnumerable<Action>> Success();
 
-        public abstract IEnumerable<IEnumerable<Action>> Failure(); 
+        public abstract IEnumerable<IEnumerable<Action>> Failure();
+
+        public abstract IEnumerable<IEnumerable<Action>> Move(float posY);
+
+        public abstract void Progress();
 
         public abstract bool IsExpired { get; }
+
+        public bool CompletedOnFirstCheck { get; protected set; }
+
+        public abstract int Score { get; }
     }
 }

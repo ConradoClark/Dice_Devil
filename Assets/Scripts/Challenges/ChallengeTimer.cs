@@ -61,13 +61,16 @@ public class ChallengeTimer : EffectPoolable
             }
 
             Bar.size = new Vector2(MaxSize - step * (MaxSize - MinSize), Bar.size.y);
-        });
+        }, breakCondition: () => IsEffectOver);
 
         IsExpired = true;
     }
 
     public override void OnActivation()
     {
+        IsExpired = false;
+        _isEffectOver = false;
+        Bar.size = new Vector2(MaxSize, Bar.size.y);
         DefaultMachinery.AddBasicMachine(TickAway());
     }
 
