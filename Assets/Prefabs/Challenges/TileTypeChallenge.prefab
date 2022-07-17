@@ -78,7 +78,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &5471340573491664370
 MonoBehaviour:
@@ -253,7 +253,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &5213780792076243958
 MonoBehaviour:
@@ -360,8 +360,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ActiveOnInitialization: 0
+  Label: {fileID: 3006199377282823608}
   ChallengeText: {fileID: 5213780792076243958}
   ProgressText: {fileID: 5471340573491664370}
+  SuccessColorize: {r: 0.18798423, g: 1, b: 0, a: 0.5882353}
+  FailureColorize: {r: 1, g: 0, b: 0, a: 0.5882353}
 --- !u!1 &3246501299129954499
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,7 +454,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: ba8b495ee6451e947bcf9e7b1355909c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

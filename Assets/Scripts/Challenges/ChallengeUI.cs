@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assets.Scripts.Challenges;
 using Licht.Impl.Orchestration;
 using Licht.Unity.Objects;
 using UnityEngine;
@@ -26,16 +27,30 @@ public class ChallengeUI : BaseUIObject
     private void OnEnable()
     {
         _challengeManager.OnChallengeStart += OnChallengeStart;
+        _challengeManager.OnChallengeSuccess += OnChallengeSuccess;
+        _challengeManager.OnChallengeFail += OnChallengeFailure;
     }
 
     private void OnDisable()
     {
         _challengeManager.OnChallengeStart -= OnChallengeStart;
+        _challengeManager.OnChallengeSuccess -= OnChallengeSuccess;
+        _challengeManager.OnChallengeFail -= OnChallengeFailure;
     }
 
-    private void OnChallengeStart(Assets.Scripts.Challenges.BaseChallenge obj)
+    private void OnChallengeStart(BaseChallenge obj)
     {
         DefaultMachinery.AddBasicMachine(obj.Start());
+    }
+
+    private void OnChallengeSuccess(BaseChallenge obj)
+    {
+        DefaultMachinery.AddBasicMachine(obj.Success());
+    }
+
+    private void OnChallengeFailure(BaseChallenge obj)
+    {
+        DefaultMachinery.AddBasicMachine(obj.Failure());
     }
 
     public Vector3 GetChallengePosition()

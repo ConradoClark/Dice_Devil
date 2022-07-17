@@ -27,6 +27,11 @@ public class ChallengeTimer : EffectPoolable
         base.OnAwake();
     }
 
+    public void Hide()
+    {
+        IsEffectOver = true;
+    }
+
     private IEnumerable<IEnumerable<Action>> TickAway()
     {
         yield return TimeYields.WaitOneFrameX; // wait for any changes to the timer
@@ -66,9 +71,10 @@ public class ChallengeTimer : EffectPoolable
         DefaultMachinery.AddBasicMachine(TickAway());
     }
 
+    private bool _isEffectOver;
     public override bool IsEffectOver
     {
-        get => ParentChallengeUI?.IsEffectOver ?? false;
-        protected set { }
+        get => _isEffectOver || (ParentChallengeUI?.IsEffectOver ?? false);
+        protected set => _isEffectOver = value;
     }
 }
