@@ -16,6 +16,9 @@ public class ManaManager : BaseGameObject
     public float MaxSize;
 
     public SpriteRenderer SpriteRenderer;
+    private bool _flashing;
+
+    public AudioSource NoManaSFX;
 
     protected override void OnAwake()
     {
@@ -30,17 +33,40 @@ public class ManaManager : BaseGameObject
 
     public bool SpendMana(int amount)
     {
-        if (Amount < amount) return false;
+        if (Amount < amount)
+        {
+            if (NoManaSFX != null) NoManaSFX.Play();
+            DefaultMachinery.AddBasicMachine(FlashBar());
+            return false;
+        }
         Amount -= amount;
         AdjustSize();
         return true;
+    }
+
+    private IEnumerable<IEnumerable<Action>> FlashBar()
+    {
+        if (_flashing)
+        {
+            _flashing = false;
+            yield return TimeYields.WaitOneFrameX;
+        }
+
+        _flashing = true;
+        for (var i = 0; i < 5; i++)
+        {
+            SpriteRenderer.enabled = !SpriteRenderer.enabled;
+            yield return TimeYields.WaitMilliseconds(GameTimer, 100, breakCondition: () => !_flashing);
+        }
+
+        SpriteRenderer.enabled = true;
     }
 
     private IEnumerable<IEnumerable<Action>> RechargeMana()
     {
         while (isActiveAndEnabled)
         {
-            Amount += (float) GameTimer.UpdatedTimeInMilliseconds * RechargeRate * 0.01f;
+            Amount += (float)GameTimer.UpdatedTimeInMilliseconds * RechargeRate * 0.01f;
             Amount = Mathf.Clamp(Amount, 0, MaxAmount);
             AdjustSize();
 
