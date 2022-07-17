@@ -11,7 +11,10 @@ public class TokenCardSlot : BaseUIObject, IResettable
 {
     public Transform EmptyCard;
     public bool IsSelected { get; private set; }
+    public bool IsBlocked { get; private set; }
     public TokenCard TokenCard { get; set; }
+
+    public SpriteRenderer BlockedSlotSprite;
 
     private ClickableObjectMixin _clickable;
     private Cursor _cursor;
@@ -26,6 +29,12 @@ public class TokenCardSlot : BaseUIObject, IResettable
             new ClickableObjectMixinBuilder(this, inputStandards.MousePosInput, inputStandards.LeftClickInput)
                 .WithCamera(uiCamera)
                 .Build();
+    }
+
+    public void ToggleBlock()
+    {
+        IsBlocked = !IsBlocked;
+        BlockedSlotSprite.enabled = IsBlocked;
     }
 
     public void MarkAsSelected()

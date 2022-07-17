@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Licht.Impl.Orchestration;
 using Licht.Unity.Extensions;
 using Licht.Unity.Objects;
@@ -92,22 +93,27 @@ public class TokenCardSelector : EffectPoolable
         {
             for (var i = 0; i < _sleeve.TokenCardSlots.Length; i++)
             {
+                if (_sleeve.TokenCardSlots[i].IsBlocked) continue;
                 transform.position = _sleeve.TokenCardSlots[i].transform.position;
                 yield return TimeYields.WaitSeconds(GameTimer, TimeBetweenRollsInSeconds);
             }
 
             for (var i = _sleeve.TokenCardSlots.Length - 2; i > 0; i--)
             {
+                if (_sleeve.TokenCardSlots[i - 1].IsBlocked) continue;
                 transform.position = _sleeve.TokenCardSlots[i - 1].transform.position;
                 yield return TimeYields.WaitSeconds(GameTimer, TimeBetweenRollsInSeconds);
             }
         }
 
-        transform.position = _sleeve.TokenCardSlots[0].transform.position;
-        var chosenSlot = _sleeve.TokenCardSlots[Random.Range(0, 6)]; // roll of the dice
+        transform.position = _sleeve.TokenCardSlots.First(t=>!t.IsBlocked).transform.position;
+
+        var validSlots = _sleeve.TokenCardSlots.Where(slot => !slot.IsBlocked).ToArray();
+        var chosenSlot = validSlots[Random.Range(0, validSlots.Length)]; // roll of the dice
 
         for (var i = 0; i < _sleeve.TokenCardSlots.Length; i++)
         {
+            if (_sleeve.TokenCardSlots[i].IsBlocked) continue;
             transform.position = _sleeve.TokenCardSlots[i].transform.position;
             if (_sleeve.TokenCardSlots[i] == chosenSlot)
             {

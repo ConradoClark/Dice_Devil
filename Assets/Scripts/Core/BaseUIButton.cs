@@ -38,8 +38,11 @@ public abstract class BaseUIButton : BaseUIObject
 
     protected virtual void OnEnable()
     {
-        Cost.text = ManaCost.ToString();
-        DefaultMachinery.AddBasicMachine(HandleCost());
+        if (Cost != null)
+        {
+            Cost.text = ManaCost.ToString();
+            DefaultMachinery.AddBasicMachine(HandleCost());
+        }
         DefaultMachinery.AddBasicMachine(HandleClick());
     }
 
@@ -67,14 +70,14 @@ public abstract class BaseUIButton : BaseUIObject
 
                 IsActive = true;
                 SpriteRenderer.sprite = ClickedSprite;
-                DarkBackground.enabled = true;
+                if (DarkBackground!=null) DarkBackground.enabled = true;
                 transform.position -= new Vector3(0, 0.05f, 0);
 
                 yield return OnClick().AsCoroutine();
 
                 IsActive = false;
                 SpriteRenderer.sprite = ButtonSprite;
-                DarkBackground.enabled = false;
+                if (DarkBackground != null) DarkBackground.enabled = false;
                 transform.position = OriginalPosition;
             }
             yield return TimeYields.WaitOneFrameX;
@@ -85,7 +88,7 @@ public abstract class BaseUIButton : BaseUIObject
     {
         IsActive = false;
         SpriteRenderer.sprite = ButtonSprite;
-        DarkBackground.enabled = false;
+        if (DarkBackground != null) DarkBackground.enabled = false;
         transform.position = OriginalPosition;
         yield break;
     }
