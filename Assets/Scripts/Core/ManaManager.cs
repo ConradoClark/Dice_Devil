@@ -5,7 +5,7 @@ using Licht.Impl.Orchestration;
 using Licht.Unity.Objects;
 using UnityEngine;
 
-public class ManaRecharge : BaseGameObject
+public class ManaManager : BaseGameObject
 {
     public float RechargeRate;
 
@@ -26,6 +26,14 @@ public class ManaRecharge : BaseGameObject
     private void OnEnable()
     {
         DefaultMachinery.AddBasicMachine(RechargeMana());
+    }
+
+    public bool SpendMana(int amount)
+    {
+        if (Amount < amount) return false;
+        Amount -= amount;
+        AdjustSize();
+        return true;
     }
 
     private IEnumerable<IEnumerable<Action>> RechargeMana()
